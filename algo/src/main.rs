@@ -150,8 +150,9 @@ fn main() {
 //        println!("{}",line);
 //    }
       //ls::find(".","".to_string());
-    let index_count = ls::create_search_index("/Users/rasrivastava/tmp.txt","/Users/rasrivastava/index.txt");
-    ls::binary_search_file("/Users/rasrivastava/index.txt","/Users/rasrivastava/tmp.txt",25,"\"slip\"",index_count);
+    //let index_count = ls::create_search_index("/Users/rasrivastava/tmp.txt","/Users/rasrivastava/index.txt");
+    //ls::binary_search_file("/Users/rasrivastava/index.txt","/Users/rasrivastava/tmp.txt",25,"\"slip\"",index_count);
+    ls::merge_sorted_files("/Users/rasrivastava/x.txt","/Users/rasrivastava/y.txt","/Users/rasrivastava/merged.txt")
 
 
 

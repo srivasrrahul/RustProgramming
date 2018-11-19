@@ -8,6 +8,7 @@ use std::io::prelude::*;
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 use std::io::SeekFrom;
+use std::io::LineWriter;
 
 pub fn list_files(file_path : &str) -> Vec<String> {
     let mut vec = Vec::new();
@@ -234,6 +235,105 @@ pub fn binary_search_file(index_file_path : &str,data_file_path : &str,block_siz
         let (k,v) = read_data(index,&mut index_file,&mut data_file_reader,block_size as i32);
         println!("{}",v);
     }
+
+}
+
+pub fn merge_sorted_files(file1 : &str,file2 : &str,merged_file : &str)  {
+    let mut f1 = File::open(file1).unwrap();
+    let mut f2 = File::open(file2).unwrap();
+
+    let mut file_reader1 = BufReader::new(&f1);
+    let mut file_reader2 = BufReader::new(&f2);
+
+    let mut f3 = File::create(merged_file).unwrap();
+
+    let mut file_line_writer = LineWriter::new(&f3);
+
+    let mut f1_str = String::new();
+    let mut res1 = file_reader1.read_line(&mut f1_str);
+
+    let mut f2_str = String::new();
+    let mut res2 = file_reader2.read_line(&mut f2_str);
+
+    let l1 = f1_str.len();
+    let l2 = f2_str.len();
+//    f1_str.truncate(l1-1);
+//    f2_str.truncate(l2-1);
+
+    while true {
+        match res1 {
+            Ok(n1) => {
+                match res2 {
+                    Ok(n2) => {
+                        if n1 > 0 && n2 > 0 {
+
+                            //println!("f1 {}",f1_str);
+                            //println!("f2 {}",f2_str);
+                            if f1_str > f2_str {
+                                //println!("inc f2");
+                                file_line_writer.write_all(&mut f2_str.as_bytes());
+                                //file_line_writer.write_all(b"\n");
+                                f2_str.clear();
+                                res2 = file_reader2.read_line(&mut f2_str);
+//                                let l2 = f2_str.len();
+//                                f2_str.truncate(l2-1);
+
+                            } else {
+                                if f2_str > f1_str {
+                                    //println!("inc f1");
+                                    file_line_writer.write_all(&mut f1_str.as_bytes());
+                                    //file_line_writer.write_all(b"\n");
+                                    f1_str.clear();
+                                    res1 = file_reader1.read_line(&mut f1_str);
+//                                    let l1 = f1_str.len();
+//                                    f1_str.truncate(l1-1);
+                                } else {
+                                    file_line_writer.write_all(&mut f1_str.as_bytes());
+                                    //file_line_writer.write_all(b"\n");
+                                    f2_str.clear();
+                                    f1_str.clear();
+                                    res1 = file_reader1.read_line(&mut f1_str);
+                                    res2 = file_reader2.read_line(&mut f2_str);
+//                                    let l1 = f1_str.len();
+//                                    let l2 = f2_str.len();
+//                                    f1_str.truncate(l1-1);
+//                                    f2_str.truncate(l2-1);
+                                }
+                            }
+                        }else {
+                            if n1 > 0 {
+                                file_line_writer.write_all(&mut f1_str.as_bytes());
+                            }
+
+                            if n2 > 0 {
+                                file_line_writer.write_all(&mut f2_str.as_bytes());
+                            }
+                            break;
+                        }
+                    },
+                    Err(_) => {
+                        break;
+                    }
+                }
+            },
+            Err(_) => {
+                break;
+            }
+        }
+    }
+
+//
+    for line1 in file_reader1.lines() {
+        file_line_writer.write_all(&mut line1.unwrap().as_bytes());
+        //file_line_writer.write_all(b"\n");
+    }
+
+    for line2 in file_reader2.lines() {
+        file_line_writer.write_all(&mut line2.unwrap().as_bytes());
+        //file_line_writer.write_all(b"\n");
+    }
+
+
 
 }
 
