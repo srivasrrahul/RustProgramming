@@ -21,6 +21,8 @@ mod top_n;
 
 mod ls;
 
+mod btree;
+
 //mod top_n;
 fn random_shuffle(slice : &mut [i32]) -> () {
     let mut rng = rand::thread_rng();
@@ -152,7 +154,8 @@ fn main() {
       //ls::find(".","".to_string());
     //let index_count = ls::create_search_index("/Users/rasrivastava/tmp.txt","/Users/rasrivastava/index.txt");
     //ls::binary_search_file("/Users/rasrivastava/index.txt","/Users/rasrivastava/tmp.txt",25,"\"slip\"",index_count);
-    ls::merge_sorted_files("/Users/rasrivastava/x.txt","/Users/rasrivastava/y.txt","/Users/rasrivastava/merged.txt")
+    //ls::merge_sorted_files("/Users/rasrivastava/x.txt","/Users/rasrivastava/y.txt","/Users/rasrivastava/merged.txt")
+    btree::BTreePage::test_page_split();
 
 
 
